@@ -1,5 +1,9 @@
 name: Build Galao
-on: [push]
+on:
+  push:
+    branches:
+      - "!master"
+      - "!develop"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +21,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Install dependencies
+        # TODO: 所有有 package.json 的檔案都應該要執行 npm ci
         run: npm ci
       - name: Build
         uses: borales/actions-yarn@v4
