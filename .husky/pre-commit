@@ -8,14 +8,19 @@ if command -v nvm &> /dev/null; then
   node_version="$(nvm version)"
   nvmrc_path="$(nvm_find_nvmrc)"
   if [ -n "$nvmrc_path" ]; then
+      # 讀取 .nvmrc 文件中的 node 版本
       nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
       if [ "$nvmrc_node_version" = "N/A" ]; then
         nvm install
-        echo "安裝 node 版本 $(cat "${nvmrc_path}")"
       elif [ "$nvmrc_node_version" != "$node_version" ]; then
         nvm use
-        echo "使用 node 版本 $(cat "${nvmrc_path}")"
       fi
+
+      # 安裝套件
+      npm ci
+
+      # 執行打包
+      npm run build
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
