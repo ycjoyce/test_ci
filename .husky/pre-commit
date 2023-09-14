@@ -43,7 +43,7 @@ if command -v nvm &> /dev/null; then
 
       # 安裝套件
       # npm ci
-      # checkSubfoldersModule
+      checkSubfoldersModule
 
       # 執行打包
       # npm run build
