@@ -28,6 +28,13 @@ source "$HOME/.nvm/nvm.sh"
 function process_directory() {
     echo $1
 
+    # 檢查該 DIR 當中有無 package-lock.json
+    if [ -f "$1/package-lock.json" ]; then
+      echo "Found package-lock.json in $1"
+      # 在包含 package.json 的子目录中执行 npm ci
+      # (cd "$1" && npm ci)
+    fi
+
     for sub_dir in "$1"/*; do
         if [ -d "$sub_dir" ]; then
           # 如果 sub_dir 的名稱為 node_modules，則跳過
