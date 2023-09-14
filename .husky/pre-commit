@@ -30,9 +30,9 @@ function process_directory() {
 
     for sub_dir in "$1"/*; do
         if [ -d "$sub_dir" ]; then
-          # 如果名稱不是 node_modules
-          if [ -name "node_modules" ]; then
-            echo "Found node_modules in $sub_dir"
+          # 如果 sub_dir 的名稱為 node_modules，則跳過
+          if [ "$(basename "$sub_dir")" = "node_modules" ]; then
+            continue
           fi
             process_directory "$sub_dir"
         fi
