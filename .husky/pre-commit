@@ -7,8 +7,8 @@ function checkSubfoldersModule() {
   # 获取当前项目的根目录
   ROOT_DIR=$(git rev-parse --show-toplevel)
 
-  # 查找所有子目录中的 package.json 文件
-  SUBDIRS=$(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package.json" \; -print)
+  # 查找所有子目录中的 package-lock.json 文件
+  SUBDIRS=$(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package-lock.json" \; -print)
 
   # 循环遍历子目录并执行 npm ci
   for SUBDIR in $SUBDIRS
@@ -16,9 +16,9 @@ function checkSubfoldersModule() {
     DIR=$(dirname "$SUBDIR")
     echo "Checking $DIR for package.json..."
 
-    # 檢查該 DIR 當中有無 package.json
-    if [ -f "$DIR/package.json" ]; then
-      echo "Found package.json in $DIR"
+    # 檢查該 DIR 當中有無 package-lock.json
+    if [ -f "$DIR/package-lock.json" ]; then
+      echo "Found package-lock.json in $DIR"
       # 在包含 package.json 的子目录中执行 npm ci
       (cd "$DIR" && npm ci)
     fi
