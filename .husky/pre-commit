@@ -7,8 +7,8 @@ function checkSubfoldersModule() {
   # 获取当前项目的根目录
   ROOT_DIR=$(git rev-parse --show-toplevel)
 
-  # 遍歷根目錄下的 src 目錄
-  SUBDIRS=$(find "$ROOT_DIR/src" -path "*" -type d)
+  # 遍歷根目錄下的 src 目錄裡的所有巢狀目錄（除了 node_modules)
+  SUBDIRS=$(find "$ROOT_DIR/src" -type d -not -path '*/node_modules/*')
 
   # 循环遍历子目录并执行 npm ci
   for SUBDIR in $SUBDIRS
