@@ -44,7 +44,7 @@ if command -v nvm &> /dev/null; then
       # 執行打包
       # npm run build
 
-      git rev-parse --show-toplevel
+      echo $(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package.json" \; -print)
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
