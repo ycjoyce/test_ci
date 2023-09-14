@@ -28,7 +28,7 @@ source "$HOME/.nvm/nvm.sh"
 function process_directory() {
     echo $1
 
-    for sub_dir in "$1"/*; do
+    for sub_dir in "$1"/!node_modules; do
         if [ -d "$sub_dir" ]; then
             process_directory "$sub_dir"
         fi
