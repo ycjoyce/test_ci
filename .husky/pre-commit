@@ -7,11 +7,8 @@ function checkSubfoldersModule() {
   # 获取当前项目的根目录
   ROOT_DIR=$(git rev-parse --show-toplevel)
 
-  # 列出 ROOT_DIR 目录下的所有子目录
-  
-
-  # 查找所有子目录中的 package-lock.json 文件
-  SUBDIRS=$(find "$ROOT_DIR" -type d -path 'src/*')
+  # 遍歷根目錄下的 src 目錄
+  SUBDIRS=$(find "$ROOT_DIR/src" -type d)
 
   # 循环遍历子目录并执行 npm ci
   for SUBDIR in $SUBDIRS
