@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 检查 nvm 是否安装
+if command -v nvm &> /dev/null; then
+  # 印出 nvm 版本
+  nvm --version
+else
+  echo "nvm is not installed."
+fi
