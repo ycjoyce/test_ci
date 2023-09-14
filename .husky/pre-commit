@@ -32,7 +32,7 @@ function process_directory() {
     if [ -f "$1/package-lock.json" ]; then
       echo "Found package-lock.json in $1"
       # 在包含 package.json 的子目录中执行 npm ci
-      # (cd "$1" && npm ci)
+      (cd "$1" && npm ci)
     fi
 
     for sub_dir in "$1"/*; do
