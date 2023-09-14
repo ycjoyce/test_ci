@@ -17,7 +17,7 @@ function checkSubfoldersModule() {
     echo "Checking $DIR for package.json..."
     
     # 在包含 package.json 的子目录中执行 npm ci
-    (cd "$DIR" && npm ci)
+    # (cd "$DIR" && npm ci)
   done
 }
 
@@ -39,10 +39,12 @@ if command -v nvm &> /dev/null; then
 
       # 安裝套件
       # npm ci
-      checkSubfoldersModule
+      # checkSubfoldersModule
 
       # 執行打包
       # npm run build
+
+      git rev-parse --show-toplevel
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
