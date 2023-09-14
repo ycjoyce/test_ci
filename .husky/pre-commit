@@ -43,8 +43,17 @@ if command -v nvm &> /dev/null; then
 
       # 執行打包
       # npm run build
-
-      echo $(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package.json" \; -print)
+  
+      ROOT_DIR=$(git rev-parse --show-toplevel)
+      SUBDIRS=$(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package.json" \; -print)
+      for SUBDIR in $SUBDIRS
+      do
+        DIR=$(dirname "$SUBDIR")
+        echo "Checking $DIR for package.json..."
+        
+        # 在包含 package.json 的子目录中执行 npm ci
+        # (cd "$DIR" && npm ci)
+      done
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
