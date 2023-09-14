@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
+source "$HOME/.nvm/nvm.sh"
 
 # 检查 nvm 是否安装
 if command -v nvm &> /dev/null; then
