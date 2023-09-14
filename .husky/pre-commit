@@ -3,35 +3,13 @@
 
 source "$HOME/.nvm/nvm.sh"
 
-# function checkSubfoldersModule() {
-#   # 获取当前项目的根目录
-#   ROOT_DIR=$(git rev-parse --show-toplevel)
-
-#   # 遍歷根目錄下的 src 目錄裡的所有巢狀目錄（除了 node_modules)
-#   SUBDIRS=$(find "$ROOT_DIR/src" -type d -name 'node_modules' -prune -o -type d -print)
-
-#   # 循环遍历子目录并执行 npm ci
-#   for SUBDIR in $SUBDIRS
-#   do
-#     DIR=$(dirname "$SUBDIR")
-#     echo "Checking $DIR for package.json..."
-
-#     # 檢查該 DIR 當中有無 package-lock.json
-#     # if [ -f "$DIR/package-lock.json" ]; then
-#     #   echo "Found package-lock.json in $DIR"
-#     #   # 在包含 package.json 的子目录中执行 npm ci
-#     #   (cd "$DIR" && npm ci)
-#     # fi
-#   done
-# }
-
 function process_directory() {
-    echo $1
+    echo "Entering $1"
 
     # 檢查該 DIR 當中有無 package-lock.json
     if [ -f "$1/package-lock.json" ]; then
       echo "Found package-lock.json in $1"
-      # 在包含 package.json 的子目录中执行 npm ci
+      # 在包含 package.json 的子目錄中執行 npm ci
       (cd "$1" && npm ci)
     fi
 
@@ -45,8 +23,6 @@ function process_directory() {
         fi
     done
 }
-
-
 
 # 檢查 nvm 是否安装
 if command -v nvm &> /dev/null; then
@@ -65,13 +41,14 @@ if command -v nvm &> /dev/null; then
       fi
 
       # 安裝套件
-      # npm ci
-      # checkSubfoldersModule
+      npm ci
       top_dir="./src"
       process_directory "$top_dir"
 
       # 執行打包
-      # npm run build
+      npm run build
+
+      git add -A
   
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
