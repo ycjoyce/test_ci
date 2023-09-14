@@ -11,10 +11,11 @@ if command -v nvm &> /dev/null; then
       nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
       if [ "$nvmrc_node_version" = "N/A" ]; then
         nvm install
+        echo "安裝 node 版本 $(cat "${nvmrc_path}")"
       elif [ "$nvmrc_node_version" != "$node_version" ]; then
         nvm use
+        echo "使用 node 版本 $(cat "${nvmrc_path}")"
       fi
-      echo "成功安裝 node 版本: $(nvm version)"
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
