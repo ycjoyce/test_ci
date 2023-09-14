@@ -26,15 +26,13 @@ source "$HOME/.nvm/nvm.sh"
 # }
 
 function process_directory() {
-    local dir="$1"
-    echo "Entering directory: $dir"
-    # 進入目錄
-    pushd "$dir" || return
-    
-    search_string="your_search_string"
-    grep -r "$search_string" .
-    echo "Exiting directory: $dir"
-    popd >/dev/null
+    echo $1
+
+    for sub_dir in "$1"/*; do
+        if [ -d "$sub_dir" ]; then
+            process_directory "$sub_dir"
+        fi
+    done
 }
 
 
@@ -59,13 +57,7 @@ if command -v nvm &> /dev/null; then
       # npm ci
       # checkSubfoldersModule
       top_dir="./src"
-      # Loop through each subdirectory
-      for sub_dir in "$top_dir"/*; do
-          if [ -d "$sub_dir" ]; then
-              # process_directory "$sub_dir"
-              echo $sub_dir
-          fi
-      done
+      process_directory "$top_dir"
 
       # 執行打包
       # npm run build
