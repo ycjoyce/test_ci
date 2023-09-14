@@ -3,7 +3,7 @@
 
 source "$HOME/.nvm/nvm.sh"
 
-# 检查 nvm 是否安装
+# 檢查 nvm 是否安装
 if command -v nvm &> /dev/null; then
   node_version="$(nvm version)"
   nvmrc_path="$(nvm_find_nvmrc)"
@@ -14,6 +14,7 @@ if command -v nvm &> /dev/null; then
       elif [ "$nvmrc_node_version" != "$node_version" ]; then
         nvm use
       fi
+      echo "成功安裝 node 版本: $(nvm version)"
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
