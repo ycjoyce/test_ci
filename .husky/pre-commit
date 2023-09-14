@@ -3,24 +3,46 @@
 
 source "$HOME/.nvm/nvm.sh"
 
+function checkSubfoldersModule() {
+  # 获取当前项目的根目录
+  ROOT_DIR=$(git rev-parse --show-toplevel)
+
+  # 查找所有子目录中的 package.json 文件
+  SUBDIRS=$(find "$ROOT_DIR" -type d -not -path '*/node_modules/*' -exec test -e "{}/package.json" \; -print)
+
+  # 循环遍历子目录并执行 npm ci
+  for SUBDIR in $SUBDIRS
+  do
+    DIR=$(dirname "$SUBDIR")
+    echo "Checking $DIR for package.json..."
+    
+    # 在包含 package.json 的子目录中执行 npm ci
+    (cd "$DIR" && npm ci)
+  done
+}
+
 # 檢查 nvm 是否安装
 if command -v nvm &> /dev/null; then
   node_version="$(nvm version)"
   nvmrc_path="$(nvm_find_nvmrc)"
+
   if [ -n "$nvmrc_path" ]; then
       # 讀取 .nvmrc 文件中的 node 版本
       nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
       if [ "$nvmrc_node_version" = "N/A" ]; then
+        # 安裝 .nvmrc 文件中的 node 版本
         nvm install
       elif [ "$nvmrc_node_version" != "$node_version" ]; then
+        # 切換到 .nvmrc 文件中的 node 版本
         nvm use
       fi
 
       # 安裝套件
-      npm ci
+      # npm ci
+      checkSubfoldersModule
 
       # 執行打包
-      npm run build
+      # npm run build
     elif [ "$node_version" != "$(nvm version default)" ]; then
       echo ".nvmrc not found"
     fi
