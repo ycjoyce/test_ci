@@ -1,51 +1,57 @@
-name: Build Galao
-on: [push]
+name: Husky Hook
+
+on:
+  push:
+    branches:
+      - main # 你的默认分支名称
+
 jobs:
-  build:
+  husky-hook:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-          cache: "npm"
-      - name: Set SSH key
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Find files with package.json
-        id: find-package-json
+          node-version: 14 # 替换为你希望使用的 Node.js 版本
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Process directories
         run: |
-          {
-            echo 'PACKAGE_PATHS<<EOF'
-            find . -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-      - name: Install dependencies
-        # 所有有 package.json 的檔案都應該要執行 npm install
-        run: |
-          echo "TEST...."
-          echo ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}
-          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
-          for item in "${items[@]}"; do
-            echo "Installing dependencies in $item"
-            (cd $(dirname $item) && npm install)
-            cd - > /dev/null
-          done
-      - name: Build
+          function process_directory() {
+            echo "Entering $1"
+
+            if [ -f "$1/package-lock.json" ]; then
+              echo "Found package-lock.json in $1"
+              (cd "$1" && npm ci)
+            fi
+
+            if [ "$(cat "$1/package.json" | grep -c "webpack")" -gt 0 ]; then
+              echo "Found webpack script in $1"
+              (cd "$1" && yarn webpack)
+            fi
+
+            for sub_dir in "$1"/*; do
+              if [ -d "$sub_dir" ] && [ "$(basename "$sub_dir")" != "node_modules" ]; then
+                process_directory "$sub_dir"
+              fi
+            done
+          }
+
+          top_dir="./src"
+          process_directory "$top_dir"
+
+      - name: Run webpack
         run: npm run build
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: ${{ github.workspace }}/build
-  download:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: ~/download/build
+
+      - name: Commit changes
+        run: |
+          git config user.name "ycjoyce"
+          git config user.email "yeechiajoyce@gmail.com"
+          git add -A
+          git commit -m "Auto commit by GitHub Actions"
