@@ -14,39 +14,28 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Find files with package-lock.json
-        id: find-package-lock-json
+      - name: Find files with package.json
+        id: find-package-json
         run: |
           {
             echo 'PACKAGE_PATHS<<EOF'
-            find . -type f -name package-lock.json -not -path "*/node_modules/*" -exec dirname {} \;
+            find . -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
         # 所有有 package-lock.json 的檔案都應該要執行 npm ci
         run: |
-          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-lock-json.outputs.PACKAGE_PATHS }}"
+          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
           for item in "${items[@]}"; do
             echo "Installing dependencies in $item"
             cd $(dirname $item)
-            npm ci
-            cd - > /dev/null
-          done
-      - name: Check whether every folder with package-lock.json has install node_modules
-        run: |
-          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-lock-json.outputs.PACKAGE_PATHS }}"
-          for item in "${items[@]}"; do
-            echo "Checking whether every folder with package-lock.json has install node_modules in $item"
-            cd $(dirname $item)
-            if [ ! -d "node_modules" ]; then
-              echo "node_modules not found in $item"
-              exit 1
-            fi
+            npm install
             cd - > /dev/null
           done
       - name: Build
-        run: |
-          npm run build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
