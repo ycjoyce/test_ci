@@ -17,15 +17,18 @@ jobs:
       - name: Find files with package.json
         id: find-package-json
         run: |
-          echo 'PACKAGE_PATHS<<EOF' >> $GITHUB_OUTPUT
-          find . -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \; >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          {
+            echo 'PACKAGE_PATHS<<EOF'
+            find . -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
         # TODO: 所有有 package.json 的檔案都應該要執行 npm ci
         run: |
-          for file in ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}; do
-            echo "Installing dependencies in $file"
-            cd $(dirname $file)
+          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
+          for item in "${items[@]}"; do
+            echo "Installing dependencies in $item"
+            cd $(dirname $item)
             npm ci
             cd - > /dev/null
           done
