@@ -45,9 +45,8 @@ jobs:
             cd - > /dev/null
           done
       - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: |
+          npm run build
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
