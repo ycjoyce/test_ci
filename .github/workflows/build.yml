@@ -28,8 +28,7 @@ jobs:
           IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
           for item in "${items[@]}"; do
             echo "Installing dependencies in $item"
-            cd $(dirname $item)
-            npm install
+            (cd $(dirname $item) && npm install)
             cd - > /dev/null
           done
       - name: Build
