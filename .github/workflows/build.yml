@@ -19,7 +19,7 @@ jobs:
         run: |
           {
             echo 'PACKAGE_PATHS<<EOF'
-            find . -name "package-lock.json" -type f
+            find . -name package.json -exec dirname {} \;
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
