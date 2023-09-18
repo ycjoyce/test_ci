@@ -26,6 +26,7 @@ jobs:
         # 所有有 package.json 的檔案都應該要執行 npm install
         run: |
           echo "TEST...."
+          echo ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}
           IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
           for item in "${items[@]}"; do
             echo "Installing dependencies in $item"
