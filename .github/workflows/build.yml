@@ -25,10 +25,7 @@ jobs:
       - name: Install dependencies
         # TODO: 所有有 package.json 的檔案都應該要執行 npm ci
         run: |
-          for file in ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}; do
-            echo "Installing dependencies in $file"
-            
-          done
+          echo ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}
       - name: Build
         uses: borales/actions-yarn@v4
         with:
