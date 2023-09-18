@@ -17,8 +17,11 @@ jobs:
       - name: Find files with package.json
         id: find-package-json
         run: |
-          package_paths=$(find . -name "package-lock.json" -type f)
-          echo "PACKAGE_PATHS=$package_paths" >> $GITHUB_OUTPUT
+          {
+            echo 'PACKAGE_PATHS<<EOF'
+            find . -name "package-lock.json" -type f
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
         # TODO: 所有有 package.json 的檔案都應該要執行 npm ci
         run: |
