@@ -19,7 +19,7 @@ jobs:
         run: |
           {
             echo 'PACKAGE_PATHS<<EOF'
-            find . -name package.json -exec dirname {} \;
+            find . -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
@@ -27,9 +27,7 @@ jobs:
         run: |
           for file in ${{ steps.find-package-json.outputs.PACKAGE_PATHS }}; do
             echo "Installing dependencies in $file"
-            cd $(dirname $file)
-            npm ci
-            cd - > /dev/null
+            
           done
       - name: Build
         uses: borales/actions-yarn@v4
