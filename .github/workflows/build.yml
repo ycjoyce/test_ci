@@ -22,9 +22,6 @@ jobs:
             find . -type f -name package-lock.json -not -path "*/node_modules/*" -exec dirname {} \;
             echo EOF
           } >> "$GITHUB_OUTPUT"
-      - name: Test echo
-        run: |
-          echo ${{ steps.find-package-lock-json.outputs.PACKAGE_PATHS }}
       - name: Install dependencies
         # 所有有 package-lock.json 的檔案都應該要執行 npm ci
         run: |
@@ -33,6 +30,18 @@ jobs:
             echo "Installing dependencies in $item"
             cd $(dirname $item)
             npm ci
+            cd - > /dev/null
+          done
+      - name: Check whether every folder with package-lock.json has install node_modules
+        run: |
+          IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-lock-json.outputs.PACKAGE_PATHS }}"
+          for item in "${items[@]}"; do
+            echo "Checking whether every folder with package-lock.json has install node_modules in $item"
+            cd $(dirname $item)
+            if [ ! -d "node_modules" ]; then
+              echo "node_modules not found in $item"
+              exit 1
+            fi
             cd - > /dev/null
           done
       - name: Build
