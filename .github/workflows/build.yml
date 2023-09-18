@@ -23,7 +23,7 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Install dependencies
-        # 所有有 package-lock.json 的檔案都應該要執行 npm ci
+        # 所有有 package.json 的檔案都應該要執行 npm install
         run: |
           IFS=$'\n' read -ra PACKAGE_PATHS <<< "${{ steps.find-package-json.outputs.PACKAGE_PATHS }}"
           for item in "${items[@]}"; do
@@ -33,9 +33,7 @@ jobs:
             cd - > /dev/null
           done
       - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: npm run build
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
